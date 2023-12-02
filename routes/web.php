@@ -3,11 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserManagementController;
-use App\Http\Controllers\TypeFormController;
 use App\Http\Controllers\Setting;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
@@ -61,7 +58,7 @@ Route::controller(LoginController::class)->group(function () {
 // ----------------------------- register -------------------------//
 Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'register')->name('register');
-    Route::post('/register','storeUser')->name('register');    
+    Route::post('/register','storeUser')->name('register');
 });
 
 // -------------------------- main dashboard ----------------------//
