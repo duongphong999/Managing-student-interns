@@ -64,7 +64,7 @@
 
                         <div class="table-responsive">
                             <table id="DataList" class="table border-0 star-student table-hover table-center mb-0 datatable table-striped">
-                                <thead class="student-thread"> 
+                                <thead class="student-thread">
                                     <tr>
                                         <th>
                                             <div class="form-check check-tables">
@@ -73,10 +73,7 @@
                                         </th>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>Class</th>
                                         <th>Gender</th>
-                                        <th>Subject</th>
-                                        <th>Section</th>
                                         <th>Mobile Number</th>
                                         <th>Address</th>
                                         <th class="text-end">Action</th>
@@ -105,20 +102,19 @@
                                                 <a href="teacher-details.html">{{ $list->name }}</a>
                                             </h2>
                                         </td>
-                                        <td>10</td>
                                         <td>{{ $list->gender }}</td>
-                                        <td>Mathematics</td>
-                                        <td>A</td>
                                         <td>{{ $list->mobile }}</td>
                                         <td>{{ $list->address }}</td>
                                         <td class="text-end">
                                             <div class="actions">
-                                                <a href="{{ url('teacher/edit/'.$list->id) }}" class="btn btn-sm bg-danger-light">
-                                                    <i class="feather-edit"></i>
-                                                </a>
-                                                <a class="btn btn-sm bg-danger-light teacher_delete" data-bs-toggle="modal" data-bs-target="#teacherDelete">
-                                                    <i class="feather-trash-2 me-1"></i>
-                                                </a>
+                                                @if (Session::get('role_name') === 'Admin' || Session::get('role_name') === 'Super Admin' || Session::get('user_id') === $list->user_id)
+                                                    <a href="{{ url('teacher/edit/'.$list->id) }}" class="btn btn-sm bg-danger-light">
+                                                        <i class="feather-edit"></i>
+                                                    </a>
+                                                    <a class="btn btn-sm bg-danger-light teacher_delete" data-bs-toggle="modal" data-bs-target="#teacherDelete">
+                                                        <i class="feather-trash-2 me-1"></i>
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

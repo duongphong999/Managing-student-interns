@@ -6,6 +6,7 @@ use DB;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\File;
 
 class StudentController extends Controller
 {
@@ -28,7 +29,7 @@ class StudentController extends Controller
     {
         return view('student.add-student');
     }
-    
+
     /** student save record */
     public function studentSave(Request $request)
     {
@@ -47,10 +48,9 @@ class StudentController extends Controller
             'phone_number'  => 'required',
             'upload'        => 'required|image',
         ]);
-        
+
         DB::beginTransaction();
         try {
-           
             $upload_file = rand() . '.' . $request->upload->extension();
             $request->upload->move(storage_path('app/public/student-photos/'), $upload_file);
             if(!empty($request->upload)) {
@@ -75,7 +75,6 @@ class StudentController extends Controller
             }
 
             return redirect()->back();
-           
         } catch(\Exception $e) {
             DB::rollback();
             Toastr::error('fail, Add new student  :)','Error');
@@ -97,22 +96,36 @@ class StudentController extends Controller
         try {
 
             if (!empty($request->upload)) {
-                unlink(storage_path('app/public/student-photos/'.$request->image_hidden));
+                $existingFilePath = storage_path('app/public/student-photos/') . $request->image_hidden;
+                File::delete($existingFilePath);
                 $upload_file = rand() . '.' . $request->upload->extension();
                 $request->upload->move(storage_path('app/public/student-photos/'), $upload_file);
             } else {
                 $upload_file = $request->image_hidden;
             }
-           
+
             $updateRecord = [
-                'upload' => $upload_file,
+                'upload'       => $upload_file,
+                'first_name'   => $request->first_name,
+                'last_name'    => $request->last_name,
+                'gender'       => $request->gender,
+                'date_of_birth'=> $request->date_of_birth,
+                'roll'         => $request->roll,
+                'blood_group'  => $request->blood_group,
+                'religion'     => $request->religion,
+                'email'        => $request->email,
+                'class'        => $request->class,
+                'section'      => $request->section,
+                'admission_id' => $request->admission_id,
+                'phone_number' => $request->phone_number,
             ];
+
             Student::where('id',$request->id)->update($updateRecord);
-            
+
             Toastr::success('Has been update successfully :)','Success');
             DB::commit();
             return redirect()->back();
-           
+
         } catch(\Exception $e) {
             DB::rollback();
             Toastr::error('fail, update student  :)','Error');
@@ -125,7 +138,7 @@ class StudentController extends Controller
     {
         DB::beginTransaction();
         try {
-           
+
             if (!empty($request->id)) {
                 Student::destroy($request->id);
                 unlink(storage_path('app/public/student-photos/'.$request->avatar));
@@ -133,7 +146,7 @@ class StudentController extends Controller
                 Toastr::success('Student deleted successfully :)','Success');
                 return redirect()->back();
             }
-    
+
         } catch(\Exception $e) {
             DB::rollback();
             Toastr::error('Student deleted fail :)','Error');
