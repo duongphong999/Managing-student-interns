@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use DB;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
@@ -53,8 +53,10 @@ class StudentController extends Controller
         try {
             $upload_file = rand() . '.' . $request->upload->extension();
             $request->upload->move(storage_path('app/public/student-photos/'), $upload_file);
+            $maxStudentId = Student::max('id');
             if(!empty($request->upload)) {
                 $student = new Student;
+                $student->student_id   = 'SV' . str_pad($maxStudentId + 1, 5, '0', STR_PAD_LEFT);
                 $student->first_name   = $request->first_name;
                 $student->last_name    = $request->last_name;
                 $student->gender       = $request->gender;
@@ -76,6 +78,7 @@ class StudentController extends Controller
 
             return redirect()->back();
         } catch(\Exception $e) {
+            dd($e);
             DB::rollback();
             Toastr::error('fail, Add new student  :)','Error');
             return redirect()->back();

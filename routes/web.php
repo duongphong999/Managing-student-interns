@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Setting;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\DepartmentController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,4 +113,11 @@ Route::controller(DepartmentController::class)->group(function () {
     Route::get('department/list/page', 'departmentList')->middleware('auth')->name('department/list/page'); // department/list/page
     Route::get('department/add/page', 'indexDepartment')->middleware('auth')->name('department/add/page'); // page add department
     Route::get('department/edit/page', 'editDepartment')->middleware('auth')->name('department/edit/page'); // page add department
+});
+
+// ----------------------- attendance -----------------------------//
+Route::controller(AttendanceController::class)->group(function () {
+    route::get('attendance/index', 'index')->middleware('auth')->name('attendance.index');
+    route::get('attendance/show/{id}', 'show')->middleware('auth')->name('attendance.show');
+    route::post('attendance/post', 'post')->middleware('auth')->name('attendance.post');
 });
