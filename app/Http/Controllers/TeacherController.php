@@ -58,11 +58,9 @@ class TeacherController extends Controller
         ]);
 
         try {
-        
             $dt        = Carbon::now();
             $todayDate = $dt->toDayDateTimeString();
-            
-                 
+
             User::create([
                 'name'      => $request->full_name,
                 'email'     => $request->email,
@@ -71,7 +69,7 @@ class TeacherController extends Controller
                 'password'  => Hash::make($request->password),
             ]);
             $user_id = DB::table('users')->select('user_id')->orderBy('id','DESC')->first();
-            
+
             $saveRecord = new Teacher;
             $saveRecord->teacher_id    = $user_id->user_id;
             $saveRecord->full_name     = $request->full_name;
@@ -88,7 +86,7 @@ class TeacherController extends Controller
             $saveRecord->zip_code      = $request->zip_code;
             $saveRecord->country       = $request->country;
             $saveRecord->save();
-   
+
             Toastr::success('Has been add successfully :)','Success');
             return redirect()->back();
         } catch(\Exception $e) {
@@ -128,11 +126,11 @@ class TeacherController extends Controller
                 'country'      => $request->country,
             ];
             Teacher::where('id',$request->id)->update($updateRecord);
-            
+
             Toastr::success('Has been update successfully :)','Success');
             DB::commit();
             return redirect()->back();
-           
+
         } catch(\Exception $e) {
             DB::rollback();
             Toastr::error('fail, update record  :)','Error');

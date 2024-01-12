@@ -9,6 +9,7 @@ class Student extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'student_id',
         'first_name',
         'last_name',
         'gender',
@@ -23,4 +24,9 @@ class Student extends Model
         'phone_number',
         'upload',
     ];
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'student_id', 'student_id');
+    }
 }

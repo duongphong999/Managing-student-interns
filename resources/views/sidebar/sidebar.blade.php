@@ -75,13 +75,13 @@
                 </li>
                 <li class="submenu">
                     <a href="#"><i class="fas fa-book-reader"></i>
-                        <span> Subjects</span>
+                        <span> Attendance</span>
                         <span class="menu-arrow"></span>
                     </a>
                     <ul>
-                        <li><a href="subjects.html">Subject List</a></li>
-                        <li><a href="add-subject.html">Subject Add</a></li>
-                        <li><a href="edit-subject.html">Subject Edit</a></li>
+                        <li><a href="{{ route('attendance.index') }}">Student List</a></li>
+                        <li><a href="javascript:void(0)" class="{{set_active(['attendance.show'])}}">Attendance Show</a></li>
+                        <li><a href="javascript:void(0)">Subject Edit</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
