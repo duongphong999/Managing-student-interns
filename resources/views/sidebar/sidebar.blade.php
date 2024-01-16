@@ -73,15 +73,14 @@
                         <li><a href="{{ route('department/edit/page') }}" class="{{set_active(['department/edit/page'])}}">Department Edit</a></li>
                     </ul>
                 </li>
-                <li class="submenu">
+                <li class="submenu {{set_active(['attendance/index','attendance/show'])}}">
                     <a href="#"><i class="fas fa-book-reader"></i>
                         <span> Attendance</span>
                         <span class="menu-arrow"></span>
                     </a>
                     <ul>
-                        <li><a href="{{ route('attendance.index') }}">Student List</a></li>
-                        <li><a href="javascript:void(0)" class="{{set_active(['attendance.show'])}}">Attendance Show</a></li>
-                        <li><a href="javascript:void(0)">Subject Edit</a></li>
+                        <li><a href="{{ route('attendance.index') }}" class="{{set_active(['attendance/index'])}}">Schedule List</a></li>
+                        <li><a href="javascript:void(0)" class="{{ (request()->is('attendance/show/*')) ? 'active' : '' }}">Attendance Show</a></li>
                     </ul>
                 </li>
                 <li class="submenu">

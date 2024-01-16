@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('class_name', 50);
             $table->string('subject');
             $table->string('teacher');
-            $table->enum('frametime', ['0', '1']);
+            $table->tinyInteger('frametime');
             $table->float('starttime', 8, 2);
             $table->float('endtime', 8, 2);
             $table->date('start_date')->nullable();
