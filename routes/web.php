@@ -69,6 +69,7 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('user/profile/page', 'userProfile')->middleware('auth')->name('user/profile/page');
     Route::get('teacher/dashboard', 'teacherDashboardIndex')->middleware('auth')->name('teacher/dashboard');
     Route::get('student/dashboard', 'studentDashboardIndex')->middleware('auth')->name('student/dashboard');
+    Route::get('home/show/{id}', 'show')->middleware('auth')->name('home.show');
 });
 
 // ----------------------------- user controller -------------------------//
