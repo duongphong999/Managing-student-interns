@@ -25,7 +25,7 @@ class AttendanceController extends Controller
 
         $currentDate = $mydate->format('Y-m-d');
 
-        $frameTime = 0; //0 -> 2,4,6 | 1 => 3, 5, 7
+        $frametime = 0; //0 -> 2,4,6 | 1 => 3, 5, 7
         $day       = $mydate->format('N'); //1 => Thu 2, 2 => Thu 3, ..., 7 => Chu nhat
         //1, 3, 5 => thu 2, 4, 6 => frametime = 0
         //2, 4, 6 => thu 3, 5, 7 => frametime = 1
@@ -40,12 +40,11 @@ class AttendanceController extends Controller
         $minute      = $mydate->format('i');
         $currentTime = $hour + $minute / 60;
 
-        $schedulesToday = DB::table('schedules')
-            ->where('start_date', '<=', $currentDate)
+        $schedulesToday = Schedule::where('start_date', '<=', $currentDate)
             ->where('end_date', '>=', $currentDate)
             ->where('frametime', $frametime)
-            ->where('starttime', '<=', $currentTime)
-            ->where('endtime', '>=', $currentTime)
+            // ->where('starttime', '<=', $currentTime)
+            // ->where('endtime', '>=', $currentTime)
             ->get();
 
         return view('attendence.index')->with([
@@ -72,37 +71,36 @@ class AttendanceController extends Controller
      */
     public function show(Request $request, $id)
     {
-		$schedule = Schedule::where('id', $id)->first();
+        $schedule = Schedule::where('id', $id)->first();
 
-		if (empty($schedule)) {
+        if (empty($schedule)) {
             return redirect()->route('attendence.index');
-		}
+        }
 
-		//danh sach sinh vien;
-		$mydate = new \DateTime();
-		$mydate->modify('+7 hours');
+        //danh sach sinh vien;
+        $mydate = new \DateTime();
+        $mydate->modify('+7 hours');
 
-		$currentDate = $mydate->format('Y-m-d');
+        $currentDate = $mydate->format('Y-m-d');
 
-		//1 ngay => hoc 1 buoi => 1 lan diem danh.
-		$edit = Attendance::leftJoin('students', 'students.student_id', '=', 'attendances.student_id')
-			->where('attendances.schedule_id', $id)
-			->where('attendances.created_at', '>=', $currentDate)
-			->select('attendances.*', 'students.first_name')
-			->get();
+        //1 ngay => hoc 1 buoi => 1 lan diem danh.
+        $edit = Attendance::leftJoin('students', 'students.student_id', '=', 'attendances.student_id')
+            ->where('attendances.schedule_id', $id)
+            ->where('attendances.created_at', '>=', $currentDate)
+            ->select('attendances.*', 'students.first_name')
+            ->get();
 
+        $studentList = [];
+        if ($edit == null || count($edit) == 0) {
+            $studentList = Student::where('class', $schedule->class_name)->get();
+        }
 
-		$studentList = [];
-		if ($edit == null || count($edit) == 0) {
-			$studentList = Student::where('class', $schedule->class_name)->get();
-		}
-
-		return view('attendence.view')->with([
-				'index'       => 1,
-				'schedule'     => $schedule,
-				'studentList' => $studentList,
-				'edit'        => $edit
-			]);
+        return view('attendence.view')->with([
+            'index'       => 1,
+            'schedule'     => $schedule,
+            'studentList' => $studentList,
+            'edit'        => $edit
+        ]);
     }
 
     /**
@@ -112,19 +110,19 @@ class AttendanceController extends Controller
     public function post(Request $request)
     {
         $mydate = new \DateTime();
-		$mydate->modify('+7 hours');
+        $mydate->modify('+7 hours');
 
-		$schedule_id  = $request->schedule_id;
-		$data        = json_decode($request->data, true);
-		$currentTime = $mydate->format('Y-m-d H:i:s');
-		$currentDate = $mydate->format('Y-m-d');
+        $schedule_id  = $request->schedule_id;
+        $data        = json_decode($request->data, true);
+        $currentTime = $mydate->format('Y-m-d H:i:s');
+        $currentDate = $mydate->format('Y-m-d');
 
-		//check du lieu da ton tai chua
-		$edit = Attendance::leftJoin('students', 'students.student_id', '=', 'attendances.student_id')
-			->where('attendances.schedule_id', $schedule_id)
-			->where('attendances.created_at', '>=', $currentDate)
-			->select('attendances.*', 'students.first_name')
-			->get();
+        //check du lieu da ton tai chua
+        $edit = Attendance::leftJoin('students', 'students.student_id', '=', 'attendances.student_id')
+            ->where('attendances.schedule_id', $schedule_id)
+            ->where('attendances.created_at', '>=', $currentDate)
+            ->select('attendances.*', 'students.first_name')
+            ->get();
         try {
             if ($edit != null && count($edit) > 0) {
                 //update
@@ -156,12 +154,12 @@ class AttendanceController extends Controller
             Toastr::success('Has been add successfully :)', 'Success');
             DB::commit();
 
-            return redirect()->route('attendance.show',['id' => $schedule_id]);
-        } catch(\Exception $e) {
+            return redirect()->route('attendance.show', ['id' => $schedule_id]);
+        } catch (\Exception $e) {
             DB::rollback();
             Toastr::error('fail, edit attendance  :)', 'Error');
 
-            return redirect()->route('attendance.show',['id' => $schedule_id]);
+            return redirect()->route('attendance.show', ['id' => $schedule_id]);
         }
     }
 
@@ -186,5 +184,47 @@ class AttendanceController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showByMonth(Request $request, $id)
+    {
+        $schedule = Schedule::where('id', $id)->first();
+
+        if (empty($schedule)) {
+            return redirect()->route('attendence.index');
+        }
+
+        // Lấy tháng từ request hoặc sử dụng tháng hiện tại nếu không có
+        $selectedMonth = $request->input('selected_month', date('m'));
+
+        //danh sach sinh vien;
+        $mydate = new \DateTime();
+        $mydate->modify('+7 hours');
+
+        $currentDate = $mydate->format('Y-m-d');
+
+        $attendanceByDay = Attendance::leftJoin('students', 'students.student_id', '=', 'attendances.student_id')
+        ->where('attendances.schedule_id', $id)
+        ->whereRaw('MONTH(attendances.created_at) = ?', [$selectedMonth])
+        ->orderBy('attendances.created_at', 'asc') // Sắp xếp theo ngày tăng dần
+        ->select('attendances.*', 'students.first_name')
+        ->get();
+
+        $attendanceByDayGrouped = $attendanceByDay->groupBy(function ($item) {
+            return $item->created_at->format('Y-m-d');
+        });
+
+        return view('attendence.month')->with([
+            'schedule'     => $schedule,
+            'attendanceByDayGrouped'        => $attendanceByDayGrouped,
+            'selectedMonth' => $selectedMonth, // Truyền giá trị tháng đã chọn vào view (nếu cần)
+        ]);
     }
 }

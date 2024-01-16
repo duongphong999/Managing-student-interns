@@ -120,4 +120,5 @@ Route::controller(AttendanceController::class)->group(function () {
     route::get('attendance/index', 'index')->middleware('auth')->name('attendance.index');
     route::get('attendance/show/{id}', 'show')->middleware('auth')->name('attendance.show');
     route::post('attendance/post', 'post')->middleware('auth')->name('attendance.post');
+    route::get('attendance/show/month/{id}', 'showByMonth')->middleware('auth')->name('attendance.month');
 });

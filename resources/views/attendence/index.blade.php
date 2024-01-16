@@ -89,7 +89,12 @@
                                         </td>
                                         <td class="d-flex justify-content-center">
                                             <button class="btn btn-success me-2">Week</button>
-                                            <button class="btn btn-success">Month</button>
+                                            <select name="selected_month" id="selected_month{{ $key }}" onchange="changeMonth({{ $item->id }}, 'selected_month{{ $key }}')">
+                                                <option value="">Select Month</option>
+                                                @for ($i = 1; $i <= 12; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -114,5 +119,10 @@
         var url = "/attendance/show/" + date;
         location.href = url;
     });
+
+    function changeMonth(scheduleId, selectId) {
+        var selectedMonth = document.getElementById(selectId).value;
+        window.location.href = "{{ url('attendance/show/month') }}/" + scheduleId + "?selected_month=" + selectedMonth;
+    }
 </script>
 @endsection
