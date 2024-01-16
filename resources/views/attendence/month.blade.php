@@ -59,10 +59,10 @@
                         </h2>
                     </td>
                     <td class="text-center">
-                        <input class="form-check-input" type="radio" id="action-attendance-{{ $item->student_id }}" name="{{ $item->student_id }}{{$date}}" value="0" {{ ($item->status == 0)?'checked':'' }}>
+                        <input class="form-check-input" type="checkbox" id="action-attendance-{{ $item->student_id }}" name="{{ $item->student_id }}{{$date}}" value="0" {{ ($item->status == 0)?'checked':'' }}>
                     </td>
                     <td class="text-center">
-                        <input class="form-check-input" type="radio" id="action-attendance-{{ $item->student_id }}" name="{{ $item->student_id }}{{$date}}" value="1" {{ ($item->status == 1)?'checked':'' }}>
+                        <input class="form-check-input" type="checkbox" id="action-attendance-{{ $item->student_id }}" name="{{ $item->student_id }}{{$date}}" value="1" {{ ($item->status == 1)?'checked':'' }}>
                     </td>
                     <td>
                         <input type="text" name="note_{{ $item->student_id }}{{$date}}" class="form-control" value="{{ $item->note }}">
