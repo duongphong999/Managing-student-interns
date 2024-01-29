@@ -42,11 +42,11 @@ class AttendanceController extends Controller
 
         $schedulesToday = Schedule::where('start_date', '<=', $currentDate)
             ->where('end_date', '>=', $currentDate)
-            ->where('frametime', $frametime)
+            // ->where('frametime', $frametime)
             // ->where('starttime', '<=', $currentTime)
             // ->where('endtime', '>=', $currentTime)
             ->get();
-
+// dd($schedulesToday);
         return view('attendence.index')->with([
             'index'        => 1,
             'schedulesToday' => $schedulesToday

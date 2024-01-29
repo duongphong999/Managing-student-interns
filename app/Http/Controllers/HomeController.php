@@ -25,7 +25,7 @@ class HomeController extends Controller
     * @return \Illuminate\Contracts\Support\Renderable
     */
     /** home dashboard */
-    public function index()
+    public function front()
     {
         //Lọc ra những lớp học đang available trong khung giờ hiện tại
         $mydate = new \DateTime();
@@ -50,7 +50,7 @@ class HomeController extends Controller
 
         $schedulesToday = Schedule::where('start_date', '<=', $currentDate)
             ->where('end_date', '>=', $currentDate)
-            ->where('frametime', $frametime)
+            // ->where('frametime', $frametime)
             // ->where('starttime', '<=', $currentTime)
             // ->where('endtime', '>=', $currentTime)
             ->get();
@@ -59,6 +59,11 @@ class HomeController extends Controller
             'index'        => 1,
             'schedulesToday' => $schedulesToday
         ]);
+    }
+
+    public function index()
+    {
+        return view('dashboard.home');
     }
 
     /**

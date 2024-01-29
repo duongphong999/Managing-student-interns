@@ -66,6 +66,7 @@ Route::controller(RegisterController::class)->group(function () {
 // -------------------------- main dashboard ----------------------//
 Route::controller(HomeController::class)->group(function () {
     Route::get('/home', 'index')->middleware('auth')->name('home');
+    Route::get('/index', 'front')->middleware('auth')->name('front');
     Route::get('user/profile/page', 'userProfile')->middleware('auth')->name('user/profile/page');
     Route::get('teacher/dashboard', 'teacherDashboardIndex')->middleware('auth')->name('teacher/dashboard');
     Route::get('student/dashboard', 'studentDashboardIndex')->middleware('auth')->name('student/dashboard');
